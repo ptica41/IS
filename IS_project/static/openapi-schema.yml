@@ -1,0 +1,74 @@
+openapi: 3.0.2
+info:
+  title: 'IS'
+  version: ''
+
+paths:
+
+  /token/create/:
+    post:
+      operationId: Create token
+      summary: Create token
+      description: |
+        # Все пользователи
+        # Создание токенов
+        ## В теле запроса передаем username и password
+        ## 3 вида 401 ошибки: ERROR_INVALID_USERNAME (Неверный юзернейм), ERROR_INACTIVE_USER (неактивный пользователь), ERROR_INVALID_PASSWORD (неверный пароль) - проверка на валидность именно в этой последовательности
+        ## Активный пользователь - в ответе только активные роли и активные школы, а также активные дети пользователя по всем активным школам
+        ### Роли: director - завуч, teacher - учитель, facultative_teacher - учитель факультативов, tutor - тьютор (классный руководитель), parent - родитель, student - ученик, food - оператор питания
+      parameters: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "admin"
+                  required: true
+                password:
+                  type: string
+                  example: "Maksoft2024"
+                  required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: { }
+          description: OK
+      tags:
+        - token
+
+  /whoami/:
+    get:
+      security:
+        - bearerAuth: [ ]
+      summary: Get a user by access token
+      operationId: WhoAmI
+      description: |
+        ## Получение информации пользователя по access токену (активные пользователи (is_active=True))
+        ## Активный пользователь - в ответе только активные роли и активные школы, а также активные дети пользователя по всем активным школам
+        ### Роли: director - завуч, teacher - учитель, facultative_teacher - учитель факультативов, tutor - тьютор (классный руководитель), parent - родитель, student - ученик, food - оператор питания
+      parameters: [ ]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: { }
+          description: OK
+      tags:
+        - my_info
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    basicAuth:
+      type: http
+      scheme: basic
+
+
